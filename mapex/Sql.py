@@ -1131,7 +1131,7 @@ class Adapter(AdapterLogger, metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def execute_query(self, sql, params) -> list:
+    def execute_query(self, sql, params, **kwargs) -> list:
         """
         Выполняет запрос средствами используемого коннектора
         :param sql: Sql-запрос

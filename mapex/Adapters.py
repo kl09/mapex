@@ -53,14 +53,14 @@ class PgSqlDbAdapter(Adapter):
         """
         return self.connection.execute(sql)
 
-    def execute_query(self, sql, params=None):
+    def execute_query(self, sql, params=None, **kwargs):
         """
         Выполняет sql-запрос и возвращает !генератор! для обхода результата выполнения запроса
         Запрос может быть параметризованным, если содержит плэйсхолдеры и params представляет собой список значений
         :param sql:         SQL-Запрос
         :param params:      Параметры для плейсхолдеров запроса
         """
-        statement = self.connection.prepare(sql)
+        statement = self.connection.prepare(sql, kwargs)
         *args, = params if params is not None else []
         try:
             for res in statement(*args):
@@ -320,14 +320,14 @@ class MsSqlDbAdapter(Adapter):
         cursor = self.connection.cursor()
         cursor.execute(sql)
 
-    def execute_query(self, sql, params=None):
+    def execute_query(self, sql, params=None, **kwargs):
         """
         Выполняет sql-запрос и возвращает !генератор! для обхода результата выполнения запроса
         Запрос может быть параметризованным, если содержит плэйсхолдеры и params представляет собой список значений
         :param sql:         SQL-Запрос
         :param params:      Параметры для плейсхолдеров запроса
         """
-        cursor = self.connection.cursor()
+        cursor = self.connection.cursor(kwargs)
         try:
             cursor.execute(sql, params if params is not None else [])
         except self.dublicate_record_exception as err:

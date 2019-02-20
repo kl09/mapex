@@ -198,22 +198,23 @@ class MySqlDbAdapter(Adapter):
         cursor.close()
         return result
 
-    def execute_query(self, sql, params=None):
+    def execute_query(self, sql, params=None, **kwargs):
         """
         Выполняет sql-запрос и возвращает !генератор! для обхода результата выполнения запроса
         Запрос может быть параметризованным, если содержит плэйсхолдеры и params представляет собой список значений
         :param sql:         SQL-Запрос
         :param params:      Параметры для плейсхолдеров запроса
+        :param kwargs: https://dev.mysql.com/doc/connector-python/en/connector-python-api-mysqlcursor.html
         """
 
         try:
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(kwargs)
         except self.lost_connection_error:
             self.reconnect()
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(kwargs)
         except self.unread_result_error:
             self.reconnect()
-            cursor = self.connection.cursor()
+            cursor = self.connection.cursor(kwargs)
 
         try:
             cursor.execute(sql, params if params is not None else [])
